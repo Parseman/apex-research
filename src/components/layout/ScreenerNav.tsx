@@ -36,7 +36,7 @@ export default function ScreenerNav({ theme }: ScreenerNavProps) {
           {session && (
             <>
               <span className="text-xs font-plex-sans hidden sm:block" style={{ color: mutedColor }}>
-                {session.username}
+                {session.displayName ?? session.email}
               </span>
               {session.role === 'admin' && (
                 <Link

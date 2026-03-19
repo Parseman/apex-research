@@ -1,4 +1,3 @@
-const PROXY = 'https://api.allorigins.win/get?url=';
 
 export function fmtPrice(n: number | null | undefined): string {
   if (n == null) return '—';

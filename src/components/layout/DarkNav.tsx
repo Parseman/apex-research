@@ -52,7 +52,7 @@ export default function DarkNav({ title, badge }: DarkNavProps) {
           {session && (
             <>
               <span className="text-muted font-sans-dm text-xs hidden sm:block">
-                {session.username}
+                {session.displayName ?? session.email}
               </span>
               {session.role === 'admin' && (
                 <Link
