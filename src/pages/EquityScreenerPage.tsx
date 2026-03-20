@@ -138,7 +138,7 @@ export default function EquityScreenerPage() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <p className="font-plex-mono text-xs tracking-widest uppercase mb-1" style={{ color: '#8a6f2e' }}>
-              APEX EQUITY RESEARCH — RAPPORT ANALYTIQUE
+              BERDINVEST EQUITY — RAPPORT ANALYTIQUE
             </p>
             <h1 className="font-playfair text-3xl font-bold" style={{ color: '#111111' }}>
               Screener Actions Premium
@@ -280,7 +280,7 @@ export default function EquityScreenerPage() {
           <p className="font-plex-sans text-xs text-center leading-relaxed" style={{ color: '#5a5040' }}>
             Les informations présentées sont fournies à titre informatif et ne constituent pas un conseil
             en investissement financier. Les données de marché sont indicatives.
-            © {new Date().getFullYear()} Apex Research
+            © {new Date().getFullYear()} Berdinvest
           </p>
         </div>
       </footer>

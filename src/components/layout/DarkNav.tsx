@@ -21,7 +21,7 @@ export default function DarkNav({ title, badge }: DarkNavProps) {
             <span className="text-gold font-cormorant font-bold text-sm">A</span>
           </div>
           <span className="text-cream font-cormorant text-lg font-semibold tracking-wide">
-            Apex Research
+            Berdinvest
           </span>
         </Link>
 

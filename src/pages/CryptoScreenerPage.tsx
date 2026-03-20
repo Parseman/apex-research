@@ -138,7 +138,7 @@ export default function CryptoScreenerPage() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <p className="font-plex-mono text-xs tracking-widest uppercase mb-1" style={{ color: '#0E7490' }}>
-              APEX CRYPTO RESEARCH — RAPPORT ANALYTIQUE
+              BERDINVEST CRYPTO — RAPPORT ANALYTIQUE
             </p>
             <h1 className="font-playfair text-3xl font-bold" style={{ color: '#0D1520' }}>
               Screener Crypto Premium
@@ -274,7 +274,7 @@ export default function CryptoScreenerPage() {
           <p className="font-plex-sans text-xs text-center leading-relaxed" style={{ color: '#2A6070' }}>
             Les informations présentées sont fournies à titre informatif et ne constituent pas un conseil
             en investissement financier. Les données de marché sont indicatives.
-            © {new Date().getFullYear()} Apex Research
+            © {new Date().getFullYear()} Berdinvest
           </p>
         </div>
       </footer>

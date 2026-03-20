@@ -169,13 +169,13 @@ export default function HomePage() {
       <footer className="border-t" style={{ borderColor: 'rgba(200,169,110,0.1)' }}>
         <div className="max-w-7xl mx-auto px-6 py-8">
           <p className="font-sans-dm text-xs text-muted text-center leading-relaxed">
-            Apex Research — Plateforme d'analyse de marché. Les informations présentées sont
+            Berdinvest — Plateforme d'analyse de marché. Les informations présentées sont
             fournies à titre informatif et ne constituent pas des conseils en investissement.
             Les performances passées ne préjugent pas des performances futures. Tout investissement
             comporte un risque de perte en capital.
           </p>
           <p className="font-mono-dm text-[10px] text-center mt-3" style={{ color: 'rgba(107,123,141,0.5)' }}>
-            © {new Date().getFullYear()} Apex Research — Market Intelligence
+            © {new Date().getFullYear()} Berdinvest — Market Intelligence
           </p>
         </div>
       </footer>

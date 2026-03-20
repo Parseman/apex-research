@@ -33,7 +33,7 @@ export default function AdminPage() {
             Gestion des Utilisateurs
           </h1>
           <p className="font-sans-dm text-sm text-muted mt-1">
-            Créez, modifiez et gérez les accès au portail Apex Research.
+            Créez, modifiez et gérez les accès au portail Berdinvest.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ export default function AdminPage() {
       <footer className="border-t mt-10" style={{ borderColor: 'rgba(200,169,110,0.1)' }}>
         <div className="max-w-5xl mx-auto px-6 py-6">
           <p className="font-sans-dm text-xs text-muted text-center">
-            Apex Research — Administration · Accès restreint
+            Berdinvest — Administration · Accès restreint
           </p>
         </div>
       </footer>

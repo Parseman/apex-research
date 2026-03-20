@@ -105,7 +105,7 @@ export default function OnboardingPage() {
             style={{ background: 'rgba(200,169,110,0.1)', borderColor: 'rgba(200,169,110,0.3)' }}>
             <span className="font-cormorant text-gold text-2xl font-bold">A</span>
           </div>
-          <h1 className="font-cormorant text-2xl font-bold text-cream">Apex Research</h1>
+          <h1 className="font-cormorant text-2xl font-bold text-cream">Berdinvest</h1>
           <p className="font-sans-dm text-xs text-muted mt-1 tracking-widest uppercase">
             Personnalisez votre profil
           </p>

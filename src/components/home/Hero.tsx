@@ -24,7 +24,7 @@ export default function Hero() {
         {/* Left: copy */}
         <div className="animate-fade-up">
           <p className="text-gold font-mono-dm text-xs tracking-[0.2em] uppercase mb-4">
-            Market Intelligence — Apex Research
+            Market Intelligence — Berdinvest
           </p>
           <h1
             className="font-cormorant text-5xl lg:text-6xl font-bold text-cream leading-tight mb-6"

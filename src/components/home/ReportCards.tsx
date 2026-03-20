@@ -25,7 +25,7 @@ export default function ReportCards() {
           <div className="flex items-start justify-between mb-4">
             <div>
               <span className="font-mono-dm text-xs text-gold tracking-widest uppercase">
-                APEX EQUITY RESEARCH
+                BERDINVEST EQUITY
               </span>
               <h3 className="font-cormorant text-2xl text-cream font-bold mt-1">
                 Screener Actions
@@ -73,7 +73,7 @@ export default function ReportCards() {
           <div className="flex items-start justify-between mb-4">
             <div>
               <span className="font-mono-dm text-xs text-portal-cyan tracking-widest uppercase">
-                APEX CRYPTO RESEARCH
+                BERDINVEST CRYPTO
               </span>
               <h3 className="font-cormorant text-2xl text-cream font-bold mt-1">
                 Screener Crypto
