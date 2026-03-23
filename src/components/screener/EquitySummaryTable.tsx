@@ -2,23 +2,29 @@ import { memo } from 'react';
 import { STOCK_META } from '../../data/stocks.ts';
 import { UNIVERSE_MAP } from '../../data/stockUniverse.ts';
 import { fmtPrice, fmtChg } from '../../api/api.ts';
+import type { StockAnalysis } from '../../types/analysis.ts';
+
+const REC_COLOR: Record<string, string> = { BUY: '#1a6b3c', SELL: '#8b1a1a', HOLD: '#7a4f00' };
+const REC_BG: Record<string, string> = { BUY: '#1a6b3c20', SELL: '#8b1a1a20', HOLD: '#7a4f0020' };
 
 interface EquitySummaryTableProps {
   symbols: string[];
   prices: Record<string, { price: number | null; chg: number | null }>;
+  analyses: Record<string, StockAnalysis>;
   search: string;
   onSearchChange: (v: string) => void;
   page: number;
   totalPages: number;
   totalCount: number;
   onPageChange: (p: number) => void;
+  onSelectSym: (sym: string) => void;
   matchFn?: (sym: string) => boolean;
 }
 
 const PAGE_SIZE = 20;
 
 const EquitySummaryTable = memo(function EquitySummaryTable({
-  symbols, prices, search, onSearchChange, page, totalPages, totalCount, onPageChange, matchFn,
+  symbols, prices, analyses, search, onSearchChange, page, totalPages, totalCount, onPageChange, onSelectSym, matchFn,
 }: EquitySummaryTableProps) {
   const borderColor = '#D4C9A8';
   const mutedColor = '#5a5040';
@@ -82,10 +88,17 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
               const isUp = (chg ?? 0) >= 0;
               const hasMeta = !!meta;
               const matchesProfile = matchFn?.(sym) ?? false;
+              const analysis = analyses[sym];
+              const rec = analysis?.recommendation;
               const rowBg = i % 2 === 0 ? rowBg1 : rowBg2;
 
               return (
-                <tr key={sym} style={{ background: rowBg, borderTop: `1px solid ${borderColor}` }} className="hover:brightness-95 transition-all">
+                <tr
+                  key={sym}
+                  style={{ background: rowBg, borderTop: `1px solid ${borderColor}`, cursor: 'pointer' }}
+                  className="hover:brightness-95 transition-all"
+                  onClick={() => onSelectSym(sym)}
+                >
                   <td className="px-3 py-2.5 font-plex-mono font-bold text-xs whitespace-nowrap" style={{ color: '#C9A84C' }}>
                     {sym}
                   </td>
@@ -103,6 +116,11 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
                   </td>
                   <td className="px-3 py-2.5 text-center">
                     <div className="flex items-center justify-center gap-1 flex-wrap">
+                      {rec && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-plex-mono font-bold" style={{ background: REC_BG[rec], color: REC_COLOR[rec], border: `1px solid ${REC_COLOR[rec]}40` }}>
+                          {rec}
+                        </span>
+                      )}
                       {hasMeta && (
                         <span className="px-1.5 py-0.5 rounded text-[9px] font-plex-mono font-medium" style={{ background: '#C9A84C25', color: '#8a6f2e', border: '1px solid #C9A84C40' }}>
                           ★ Analysé
@@ -113,7 +131,7 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
                           ✓ Profil
                         </span>
                       )}
-                      {!hasMeta && !matchesProfile && (
+                      {!rec && !hasMeta && !matchesProfile && (
                         <span className="text-[9px] font-plex-mono" style={{ color: 'rgba(90,80,64,0.3)' }}>—</span>
                       )}
                     </div>

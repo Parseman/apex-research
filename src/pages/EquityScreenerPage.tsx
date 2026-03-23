@@ -4,14 +4,17 @@ import TabNav from '../components/screener/TabNav.tsx';
 import EquitySummaryTable from '../components/screener/EquitySummaryTable.tsx';
 import StockCard from '../components/screener/StockCard.tsx';
 import EquityStrategy from '../components/screener/EquityStrategy.tsx';
+import StockAnalysisModal from '../components/screener/StockAnalysisModal.tsx';
 import { fetchStock } from '../api/api.ts';
 import { EQUITY_ORDER, STOCK_META } from '../data/stocks.ts';
 import { STOCK_UNIVERSE, UNIVERSE_MAP } from '../data/stockUniverse.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import { matchesEquityProfile } from '../utils/profileMatch.ts';
+import { supabase } from '../lib/supabase.ts';
+import type { StockAnalysis } from '../types/analysis.ts';
 
 const PAGE_SIZE = 20;
-const REFRESH_MS = 30_000;
+const REFRESH_MS = 120_000;
 
 // Univers complet : STOCK_UNIVERSE + featured stocks non présents dans l'univers
 const FEATURED_ONLY = EQUITY_ORDER.filter(sym => !UNIVERSE_MAP[sym]);
@@ -40,6 +43,8 @@ export default function EquityScreenerPage() {
   const [fetchStatus, setFetchStatus] = useState<'loading' | 'done' | 'error'>('loading');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState(REFRESH_MS / 1000);
+  const [analyses, setAnalyses] = useState<Record<string, StockAnalysis>>({});
+  const [selectedSym, setSelectedSym] = useState<string | null>(null);
 
   const filteredSymbols = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -72,11 +77,26 @@ export default function EquityScreenerPage() {
   // Reset page when search changes
   useEffect(() => { setPage(0); }, [search]);
 
+  // Fetch AI analyses from Supabase
+  useEffect(() => {
+    supabase.from('stock_analyses').select('*').then(({ data, error }) => {
+      if (error) { console.error('analyses fetch error:', error); return; }
+      if (!data) return;
+      console.log('analyses loaded:', data.length, data[0]);
+      const map: Record<string, StockAnalysis> = {};
+      data.forEach((row: StockAnalysis) => { map[row.sym] = row; });
+      setAnalyses(map);
+    });
+  }, []);
+
   const fetchFresh = useCallback(async (syms: string[], silent = false) => {
     if (!silent) setFetchStatus('loading');
 
     const results = await Promise.allSettled(
-      syms.map(sym => fetchStock(sym).then(d => ({ sym, ...d })))
+      syms.map((sym, i) =>
+        new Promise<void>(r => setTimeout(r, i * 120))
+          .then(() => fetchStock(sym).then(d => ({ sym, ...d })))
+      )
     );
 
     const map: PriceMap = {};
@@ -195,17 +215,29 @@ export default function EquityScreenerPage() {
 
       <TabNav tabs={TABS} active={activeTab} onChange={setActiveTab} theme="equity" />
 
+      {selectedSym !== null && (
+        <StockAnalysisModal
+          sym={selectedSym}
+          analysis={analyses[selectedSym] ?? null}
+          onClose={() => setSelectedSym(null)}
+        />
+      )}
+      {/* debug — à retirer */}
+      {selectedSym && console.log('modal open for:', selectedSym, 'analysis:', analyses[selectedSym]) as unknown as null}
+
       <div className="max-w-7xl mx-auto px-6 py-8">
         {activeTab === 0 && (
           <EquitySummaryTable
             symbols={pageSymbols}
             prices={prices}
+            analyses={analyses}
             search={search}
             onSearchChange={setSearch}
             page={page}
             totalPages={totalPages}
             totalCount={filteredSymbols.length}
             onPageChange={setPage}
+            onSelectSym={setSelectedSym}
             matchFn={sym => matchesEquityProfile(sym, session)}
           />
         )}
