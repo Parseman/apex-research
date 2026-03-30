@@ -1,23 +1,23 @@
 const FEATURES = [
   {
-    icon: '📊',
-    title: 'Analyse Fondamentale',
-    desc: 'P/E, D/E, dividendes, moat et croissance analysés pour chaque titre.',
-  },
-  {
-    icon: '🎯',
-    title: 'Targets Bull/Bear',
-    desc: 'Prix cibles haussiers et baissiers avec zones d\'entrée et stop-loss.',
-  },
-  {
-    icon: '📐',
-    title: 'Stratégie DCA',
-    desc: 'Guide complet d\'investissement progressif, accessible dès 50€/mois.',
+    icon: '🤖',
+    title: 'Analyses IA',
+    desc: 'Recommandations BUY/SELL/HOLD générées par LLM avec niveaux d\'entrée, cibles et facteurs bull/bear.',
   },
   {
     icon: '⚡',
+    title: 'Signaux Court Terme',
+    desc: 'Setups de trading 1–8 semaines : zone d\'entrée, target, stop-loss et ratio risk/reward en temps réel.',
+  },
+  {
+    icon: '📊',
     title: 'Données Live',
-    desc: 'Yahoo Finance et CoinGecko en temps réel — prix, variation 24h et market cap.',
+    desc: 'Prix actions via Finnhub, cryptos via Binance — actualisés en continu avec variation 24h.',
+  },
+  {
+    icon: '🎯',
+    title: 'Suivi des Performances',
+    desc: 'Chaque analyse est horodatée et évaluée à échéance. Win rate, P&L moyen et historique complet.',
   },
 ];
 

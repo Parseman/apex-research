@@ -8,7 +8,7 @@ export default function ReportCards() {
           Nos Screeners
         </p>
         <h2 className="font-cormorant text-3xl text-cream font-semibold">
-          Rapports d'Analyse
+          Deux univers, une plateforme
         </h2>
       </div>
 
@@ -39,11 +39,12 @@ export default function ReportCards() {
             </div>
           </div>
           <p className="font-sans-dm text-muted text-sm leading-relaxed mb-6">
-            10 actions premium — Microsoft, Apple, Alphabet, Berkshire Hathaway, Visa, Costco,
-            Amazon, P&G, J&J et VOO. Analyse complète avec stratégie DCA.
+            Plus de 500 actions US avec prix live. 41 titres phares — NVDA, MSFT, AAPL, META,
+            TSLA, JPM et bien d'autres — couverts par des analyses IA complètes avec
+            recommandation, cibles et fenêtres d'achat/vente.
           </p>
           <div className="flex flex-wrap gap-2 mb-6">
-            {['10 Actions', 'S&P 500', 'ETF VOO', 'Stratégie DCA'].map(t => (
+            {['500+ Actions', '41 Analyses IA', 'Finnhub Live', 'BUY / SELL / HOLD'].map(t => (
               <span
                 key={t}
                 className="px-2 py-0.5 rounded text-xs font-mono-dm"
@@ -57,7 +58,7 @@ export default function ReportCards() {
             className="font-sans-dm text-sm font-medium group-hover:gap-3 transition-all"
             style={{ color: '#C8A96E' }}
           >
-            Consulter le rapport →
+            Accéder au screener →
           </span>
         </Link>
 
@@ -87,11 +88,12 @@ export default function ReportCards() {
             </div>
           </div>
           <p className="font-sans-dm text-muted text-sm leading-relaxed mb-6">
-            10 cryptomonnaies sélectionnées — Bitcoin, Ethereum, Solana et 7 altcoins à
-            fort potentiel. Analyse des risques et guide DCA crypto.
+            Plus de 100 cryptomonnaies par catégorie (L1, DeFi, Oracle, AI, Gaming…).
+            10 actifs phares analysés en profondeur par IA. Signaux de trading court terme
+            avec chart TradingView, zones d'entrée et stop-loss.
           </p>
           <div className="flex flex-wrap gap-2 mb-6">
-            {['10 Cryptos', 'BTC & ETH', 'DeFi & L1', 'Risk Score'].map(t => (
+            {['100+ Cryptos', '10 Analyses IA', 'Binance Live', 'Signaux Court Terme'].map(t => (
               <span
                 key={t}
                 className="px-2 py-0.5 rounded text-xs font-mono-dm"
@@ -105,7 +107,7 @@ export default function ReportCards() {
             className="font-sans-dm text-sm font-medium"
             style={{ color: '#4ECDC4' }}
           >
-            Consulter le rapport →
+            Accéder au screener →
           </span>
         </Link>
       </div>

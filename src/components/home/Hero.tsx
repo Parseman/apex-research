@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 
 const STAT_CARDS = [
-  { label: 'Actifs Analysés', value: '20', sub: '10 actions + 10 cryptos' },
-  { label: 'Bull/Bear Targets', value: '100%', sub: 'Chaque actif couvert' },
-  { label: 'Stratégie DCA', value: 'Incluse', sub: 'Guide complet' },
-  { label: 'Données Live', value: 'Temps réel', sub: 'Yahoo Finance + CoinGecko' },
+  { label: 'Actions couvertes', value: '500+', sub: '41 analyses IA approfondies' },
+  { label: 'Cryptos couvertes', value: '100+', sub: '10 analyses IA + signaux court terme' },
+  { label: 'Analyses IA', value: 'Live', sub: 'Groq · llama-3.3-70b' },
+  { label: 'Suivi performances', value: 'Intégré', sub: 'Win rate & P&L historique' },
 ];
 
 export default function Hero() {
@@ -26,15 +26,13 @@ export default function Hero() {
           <p className="text-gold font-mono-dm text-xs tracking-[0.2em] uppercase mb-4">
             Market Intelligence — Berdinvest
           </p>
-          <h1
-            className="font-cormorant text-5xl lg:text-6xl font-bold text-cream leading-tight mb-6"
-          >
-            Invest Like a<br />
-            <span className="text-gold">Goldman</span> Analyst
+          <h1 className="font-cormorant text-5xl lg:text-6xl font-bold text-cream leading-tight mb-6">
+            L'IA au service<br />
+            de tes <span className="text-gold">investissements</span>
           </h1>
           <p className="font-sans-dm text-muted text-base leading-relaxed mb-8 max-w-md">
-            Screeners professionnels, analyses fondamentales et stratégies d'investissement
-            conçues pour quiconque veut lire les marchés avec clarté et méthode.
+            Screeners professionnels, analyses fondamentales générées par IA et signaux de
+            trading court terme — pour lire les marchés avec clarté et méthode.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
