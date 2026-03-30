@@ -101,26 +101,27 @@ export async function fetchCryptoPairs(
 ): Promise<Record<string, { price: number; chg: number }>> {
   if (pairs.length === 0) return {};
 
-  const symbolsParam = encodeURIComponent(JSON.stringify(pairs));
-  const url = `https://api.binance.com/api/v3/ticker/24hr?symbols=${symbolsParam}`;
+  // Fetch individually in parallel — the single ?symbol= endpoint allows CORS,
+  // unlike the batch ?symbols=[...] endpoint which is blocked by browsers.
+  const settled = await Promise.allSettled(
+    pairs.map(async pair => {
+      const res = await fetch(
+        `https://api.binance.com/api/v3/ticker/24hr?symbol=${pair}`,
+        { signal: AbortSignal.timeout(10000) },
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json() as Promise<{ symbol: string; lastPrice: string; priceChangePercent: string }>;
+    })
+  );
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
-
-  try {
-    const res = await fetch(url, { signal: controller.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const tickers = await res.json() as { symbol: string; lastPrice: string; priceChangePercent: string }[];
-
-    const result: Record<string, { price: number; chg: number }> = {};
-    for (const t of tickers) {
-      result[t.symbol] = {
-        price: parseFloat(t.lastPrice),
-        chg: parseFloat(t.priceChangePercent),
+  const result: Record<string, { price: number; chg: number }> = {};
+  for (const r of settled) {
+    if (r.status === 'fulfilled') {
+      result[r.value.symbol] = {
+        price: parseFloat(r.value.lastPrice),
+        chg:   parseFloat(r.value.priceChangePercent),
       };
     }
-    return result;
-  } finally {
-    clearTimeout(timer);
   }
+  return result;
 }

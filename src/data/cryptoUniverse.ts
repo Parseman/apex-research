@@ -1,13 +1,13 @@
 export interface CryptoUniverseEntry {
-  sym: string;       // Ticker affiché (BTC, ETH…)
-  name: string;      // Nom complet
-  category: string;  // Catégorie
-  pair: string;      // Paire Binance USDT (ex: BTCUSDT)
+  sym: string;          // Ticker affiché (BTC, ETH…)
+  name: string;         // Nom complet
+  category: string;     // Catégorie
+  pair: string | null;  // Paire Binance USDT — null = pas de paire (skip fetch)
 }
 
 // Format : [sym, name, category, binancePair?]
-// binancePair est optionnel ; si absent, on utilise `${sym}USDT`
-const RAW: [string, string, string, string?][] = [
+// binancePair optionnel → `${sym}USDT` par défaut ; null → pas de paire Binance
+const RAW: [string, string, string, (string | null)?][] = [
 
   // ── LAYER 1 — PROOF OF WORK ─────────────────────────────────────────────
   ['BTC',   'Bitcoin',                    'Layer 1 / PoW'],
@@ -17,8 +17,8 @@ const RAW: [string, string, string, string?][] = [
   ['DASH',  'Dash',                       'Layer 1 / PoW'],
   ['ZEC',   'Zcash',                      'Layer 1 / PoW'],
   ['RVN',   'Ravencoin',                  'Layer 1 / PoW'],
-  ['XMR',   'Monero',                     'Layer 1 / Privacy'],
-  ['KAS',   'Kaspa',                      'Layer 1 / PoW'],
+  ['XMR',   'Monero',                     'Layer 1 / Privacy',    null], // retiré de Binance fév. 2024
+  ['KAS',   'Kaspa',                      'Layer 1 / PoW',        null], // pas listé sur Binance
   ['DGB',   'DigiByte',                   'Layer 1 / PoW'],
   ['ZEN',   'Horizen',                    'Layer 1 / Privacy'],
   ['FIRO',  'Firo',                       'Layer 1 / Privacy'],
@@ -99,8 +99,8 @@ const RAW: [string, string, string, string?][] = [
   ['MANTA', 'Manta Network',              'Layer 2 / ZK Privacy'],
   ['STRK',  'Starknet',                   'Layer 2 / ZK'],
   ['ZK',    'ZKsync',                     'Layer 2 / ZK'],
-  ['ZETA',  'ZetaChain',                  'Layer 2 / Omnichain'],
-  ['TAIKO', 'Taiko',                      'Layer 2 / ZK'],
+  ['ZETA',  'ZetaChain',                  'Layer 2 / Omnichain',  null], // 400 Binance
+  ['TAIKO', 'Taiko',                      'Layer 2 / ZK',         null], // 400 Binance
 
   // ── DEFI — ÉCHANGES DÉCENTRALISÉS ────────────────────────────────────────
   ['UNI',   'Uniswap',                    'DeFi / DEX'],
@@ -195,7 +195,7 @@ const RAW: [string, string, string, string?][] = [
   ['PORTAL','Portal',                     'Gaming / Cross-chain'],
   ['MAVIA', 'Heroes of Mavia',            'Gaming / P2E'],
   ['NYAN',  'Nyan Heroes',               'Gaming'],
-  ['PYUSD', 'PayPal USD',                'Stablecoin'],
+  ['PYUSD', 'PayPal USD',                'Stablecoin',            null], // stablecoin, pas de paire USDT
   ['G',     'Gravity (G)',                'Gaming / Chain'],
   ['RONIN', 'Ronin',                      'Gaming / L1'],
 
@@ -414,14 +414,14 @@ export const CRYPTO_UNIVERSE: CryptoUniverseEntry[] = RAW
     sym,
     name,
     category,
-    pair: pair ?? `${sym}USDT`,
+    pair: pair !== undefined ? pair : `${sym}USDT`,
   }));
 
 export const CRYPTO_UNIVERSE_MAP: Record<string, CryptoUniverseEntry> = Object.fromEntries(
   CRYPTO_UNIVERSE.map(e => [e.sym, e])
 );
 
-// Map sym → pair Binance pour lookup rapide
+// Map sym → pair Binance pour lookup rapide (exclut les paires nulles)
 export const SYM_TO_PAIR: Record<string, string> = Object.fromEntries(
-  CRYPTO_UNIVERSE.map(e => [e.sym, e.pair])
+  CRYPTO_UNIVERSE.filter(e => e.pair !== null).map(e => [e.sym, e.pair as string])
 );

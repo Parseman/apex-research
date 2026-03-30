@@ -109,10 +109,12 @@ Règles strictes:
   try { analysis = JSON.parse(content); }
   catch { console.error(`JSON parse error ${sym}`); return; }
 
+  const confidence = Math.min(5, Math.max(1, Number(analysis.confidence) || 3));
+
   await db.from('stock_analyses').upsert({
     sym,
     recommendation: analysis.recommendation,
-    confidence: Math.min(5, Math.max(1, Number(analysis.confidence) || 3)),
+    confidence,
     buy_below: analysis.buy_below,
     sell_above: analysis.sell_above,
     buy_window_start: analysis.buy_window_start ?? null,
@@ -125,6 +127,27 @@ Règles strictes:
     key_insight: analysis.key_insight,
     updated_at: new Date().toISOString(),
   }, { onConflict: 'sym' });
+
+  // Snapshot immutable pour tracking des performances (fire-and-forget)
+  const evalDue = analysis.sell_window_end
+    ? new Date(String(analysis.sell_window_end))
+    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  db.from('analysis_snapshots').insert({
+    asset_type: 'stock',
+    sym,
+    signal: String(analysis.recommendation),
+    confidence,
+    price_at_analysis: quote.c,
+    buy_below: analysis.buy_below ?? null,
+    sell_above: analysis.sell_above ?? null,
+    buy_window_end: analysis.buy_window_end ?? null,
+    sell_window_end: analysis.sell_window_end ?? null,
+    evaluation_due_at: evalDue.toISOString(),
+    full_analysis: analysis,
+  }).then(({ error }) => {
+    if (error) console.warn(`Snapshot insert failed for ${sym}:`, error.message);
+  });
 
   console.log(`✓ ${sym}: ${analysis.recommendation}`);
 }

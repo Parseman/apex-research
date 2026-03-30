@@ -4,11 +4,16 @@ import TabNav from '../components/screener/TabNav.tsx';
 import CryptoSummaryTable from '../components/screener/CryptoSummaryTable.tsx';
 import CryptoCard from '../components/screener/CryptoCard.tsx';
 import CryptoStrategy from '../components/screener/CryptoStrategy.tsx';
+import CryptoAnalysisModal from '../components/screener/CryptoAnalysisModal.tsx';
+import CryptoTradingTab from '../components/screener/CryptoTradingTab.tsx';
 import { fetchCryptoPairs } from '../api/api.ts';
 import { CRYPTOS } from '../data/cryptos.ts';
 import { CRYPTO_UNIVERSE, CRYPTO_UNIVERSE_MAP, SYM_TO_PAIR } from '../data/cryptoUniverse.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import { matchesCryptoProfile } from '../utils/profileMatch.ts';
+import { supabase } from '../lib/supabase.ts';
+import type { CryptoAnalysis } from '../types/analysis.ts';
+import { useFavorites } from '../hooks/useFavorites.ts';
 
 const PAGE_SIZE = 20;
 const REFRESH_MS = 30_000;
@@ -24,14 +29,17 @@ const PROFILE_COLS = [
   { label: 'Méthode', value: 'On-chain + DCA' },
 ];
 
-const TABS = ['Résumé', 'Fiches', 'Stratégie'];
+const TABS = ['Résumé', 'Fiches', 'Court Terme', 'Stratégie'];
 
 export default function CryptoScreenerPage() {
   const { session } = useAuth();
+  const { isFavorite, toggle: toggleFavorite, count: favCount, atLimit: favAtLimit } = useFavorites();
   const [activeTab, setActiveTab] = useState(0);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [prices, setPrices] = useState<PriceMap>({});
+  const [analyses, setAnalyses] = useState<Record<string, CryptoAnalysis>>({});
+  const [selectedSym, setSelectedSym] = useState<string | null>(null);
   const [fetchStatus, setFetchStatus] = useState<'loading' | 'done' | 'error'>('loading');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState(REFRESH_MS / 1000);
@@ -65,6 +73,16 @@ export default function CryptoScreenerPage() {
 
   // Reset page when search changes
   useEffect(() => { setPage(0); }, [search]);
+
+  // Fetch AI analyses once on mount
+  useEffect(() => {
+    supabase.from('crypto_analyses').select('*').then(({ data }) => {
+      if (!data) return;
+      const map: Record<string, CryptoAnalysis> = {};
+      data.forEach(row => { map[row.sym] = row as CryptoAnalysis; });
+      setAnalyses(map);
+    });
+  }, []);
 
   const fetchFresh = useCallback(async (syms: string[], silent = false) => {
     if (!silent) setFetchStatus('loading');
@@ -211,13 +229,19 @@ export default function CryptoScreenerPage() {
           <CryptoSummaryTable
             symbols={pageSyms}
             prices={prices}
+            analyses={analyses}
             search={search}
             onSearchChange={setSearch}
             page={page}
             totalPages={totalPages}
             totalCount={filteredSyms.length}
             onPageChange={setPage}
+            onSelectSym={setSelectedSym}
             matchFn={sym => matchesCryptoProfile(sym, session)}
+            isFavorite={isFavorite}
+            onToggleFavorite={sym => toggleFavorite(sym, 'crypto')}
+            favoritesCount={favCount}
+            favoritesAtLimit={favAtLimit}
           />
         )}
 
@@ -266,8 +290,18 @@ export default function CryptoScreenerPage() {
           </div>
         )}
 
-        {activeTab === 2 && <CryptoStrategy />}
+        {activeTab === 2 && <CryptoTradingTab />}
+
+        {activeTab === 3 && <CryptoStrategy />}
       </div>
+
+      {selectedSym && (
+        <CryptoAnalysisModal
+          sym={selectedSym}
+          analysis={analyses[selectedSym] ?? null}
+          onClose={() => setSelectedSym(null)}
+        />
+      )}
 
       <footer className="border-t px-6 py-6" style={{ borderColor: '#B0D4E0', background: '#D8EDF4' }}>
         <div className="max-w-7xl mx-auto">

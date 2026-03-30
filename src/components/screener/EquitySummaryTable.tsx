@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { STOCK_META } from '../../data/stocks.ts';
 import { UNIVERSE_MAP } from '../../data/stockUniverse.ts';
 import { fmtPrice, fmtChg } from '../../api/api.ts';
@@ -19,12 +18,17 @@ interface EquitySummaryTableProps {
   onPageChange: (p: number) => void;
   onSelectSym: (sym: string) => void;
   matchFn?: (sym: string) => boolean;
+  isFavorite?: (sym: string) => boolean;
+  onToggleFavorite?: (sym: string) => void;
+  favoritesCount?: number;
+  favoritesAtLimit?: boolean;
 }
 
 const PAGE_SIZE = 20;
 
-const EquitySummaryTable = memo(function EquitySummaryTable({
+function EquitySummaryTable({
   symbols, prices, analyses, search, onSearchChange, page, totalPages, totalCount, onPageChange, onSelectSym, matchFn,
+  isFavorite, onToggleFavorite, favoritesCount = 0, favoritesAtLimit = false,
 }: EquitySummaryTableProps) {
   const borderColor = '#D4C9A8';
   const mutedColor = '#5a5040';
@@ -56,6 +60,11 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
         <span className="font-plex-mono text-xs" style={{ color: mutedColor }}>
           {totalCount} résultat{totalCount > 1 ? 's' : ''}
         </span>
+        {onToggleFavorite && (
+          <span className="font-plex-mono text-xs ml-auto" style={{ color: favoritesAtLimit ? '#8b1a1a' : '#8a6f2e' }}>
+            ★ {favoritesCount}/10 favoris
+          </span>
+        )}
       </div>
 
       {/* Table */}
@@ -63,6 +72,7 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
         <table className="w-full text-sm border-collapse font-plex-sans">
           <thead>
             <tr style={{ background: '#1A1A1A', color: '#E8C97A' }}>
+              {onToggleFavorite && <th className="px-2 py-2.5 w-8" />}
               <th className="text-left px-3 py-2.5 font-plex-mono text-xs tracking-wider whitespace-nowrap">TICKER</th>
               <th className="text-left px-3 py-2.5 font-plex-mono text-xs tracking-wider whitespace-nowrap">NOM</th>
               <th className="text-left px-3 py-2.5 font-plex-mono text-xs tracking-wider whitespace-nowrap">SECTEUR</th>
@@ -74,7 +84,7 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
           <tbody>
             {symbols.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center font-plex-sans text-sm" style={{ color: mutedColor, background: rowBg1 }}>
+                <td colSpan={onToggleFavorite ? 7 : 6} className="px-4 py-10 text-center font-plex-sans text-sm" style={{ color: mutedColor, background: rowBg1 }}>
                   Aucun résultat pour « {search} »
                 </td>
               </tr>
@@ -91,6 +101,7 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
               const analysis = analyses[sym];
               const rec = analysis?.recommendation;
               const rowBg = i % 2 === 0 ? rowBg1 : rowBg2;
+              const fav = isFavorite?.(sym) ?? false;
 
               return (
                 <tr
@@ -99,6 +110,18 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
                   className="hover:brightness-95 transition-all"
                   onClick={() => onSelectSym(sym)}
                 >
+                  {onToggleFavorite && (
+                    <td className="px-2 py-2.5 text-center" onClick={e => { e.stopPropagation(); onToggleFavorite(sym); }}>
+                      <button
+                        title={fav ? 'Retirer des favoris' : favoritesAtLimit ? 'Limite de 10 favoris atteinte' : 'Ajouter aux favoris'}
+                        className="text-sm leading-none transition-all hover:scale-110"
+                        style={{ color: fav ? '#C9A84C' : 'rgba(200,169,110,0.25)', cursor: favoritesAtLimit && !fav ? 'not-allowed' : 'pointer' }}
+                        disabled={favoritesAtLimit && !fav}
+                      >
+                        {fav ? '★' : '☆'}
+                      </button>
+                    </td>
+                  )}
                   <td className="px-3 py-2.5 font-plex-mono font-bold text-xs whitespace-nowrap" style={{ color: '#C9A84C' }}>
                     {sym}
                   </td>
@@ -193,6 +216,6 @@ const EquitySummaryTable = memo(function EquitySummaryTable({
       )}
     </div>
   );
-});
+};
 
 export default EquitySummaryTable;

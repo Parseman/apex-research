@@ -12,6 +12,7 @@ import { useAuth } from '../auth/AuthContext.tsx';
 import { matchesEquityProfile } from '../utils/profileMatch.ts';
 import { supabase } from '../lib/supabase.ts';
 import type { StockAnalysis } from '../types/analysis.ts';
+import { useFavorites } from '../hooks/useFavorites.ts';
 
 const PAGE_SIZE = 20;
 const REFRESH_MS = 120_000;
@@ -36,6 +37,7 @@ const TABS = ['Résumé', 'Fiches', 'Stratégie'];
 
 export default function EquityScreenerPage() {
   const { session } = useAuth();
+  const { isFavorite, toggle: toggleFavorite, count: favCount, atLimit: favAtLimit } = useFavorites();
   const [activeTab, setActiveTab] = useState(0);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
@@ -239,6 +241,10 @@ export default function EquityScreenerPage() {
             onPageChange={setPage}
             onSelectSym={setSelectedSym}
             matchFn={sym => matchesEquityProfile(sym, session)}
+            isFavorite={isFavorite}
+            onToggleFavorite={sym => toggleFavorite(sym, 'stock')}
+            favoritesCount={favCount}
+            favoritesAtLimit={favAtLimit}
           />
         )}
 
